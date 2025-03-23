@@ -1,0 +1,32 @@
+// 添加登录尝试模型
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  email     String
+  ipAddress String?
+  timestamp DateTime @default(now())
+  
+  @@index([email, timestamp])
+}
+
+// 添加审计日志模型
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  action    String
+  resource  String
+  details   String?
+  ipAddress String?
+  timestamp DateTime @default(now())
+  
+  user      User?    @relation(fields: [userId], references: [id])
+  
+  @@index([userId, timestamp])
+  @@index([action, resource])
+}
+
+// 更新User模型添加关联
+model User {
+  // 现有字段...
+  auditLogs  AuditLog[]
+}
+
